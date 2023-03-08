@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "296641680263",
+    "project_id": "transport-guidance",
+    "storage_bucket": "transport-guidance.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296641680263:android:16608a492e15c4d022b922",
+        "android_client_info": {
+          "package_name": "com.example.transpor_guidance_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "296641680263-o9tj5uealeh0h2u9t8dmlpbeu4ddbc0u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKVt7a7pPEog1DeSgVFvMDbcQv4GcAXis"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "296641680263-o9tj5uealeh0h2u9t8dmlpbeu4ddbc0u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
