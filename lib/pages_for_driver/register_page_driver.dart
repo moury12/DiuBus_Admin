@@ -8,7 +8,6 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:transpor_guidance_admin/Authservice/authservice.dart';
 import 'package:transpor_guidance_admin/models_for_driver/driver_model.dart';
-import 'package:transpor_guidance_admin/providers/bus_provider.dart';
 import 'package:transpor_guidance_admin/providers/driver_provider.dart';
 
 import '../pages/login_page.dart';
@@ -68,8 +67,7 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                           InkWell(onTap: (){ thumbnailImageLocalPath == null?_getImage(ImageSource.gallery):null;},
-                             child: Container(
+                           Container(
                                height: 100,
                                width: 100,
                                 child: Stack(clipBehavior: Clip.none,
@@ -90,14 +88,14 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 10)):Text(''),),
-                                    Positioned(top: -25,
-                                      left: 0,
-                                      right: 0,
-                                      child:thumbnailImageLocalPath == null? IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(
-                                            Icons.add_a_photo_rounded,
-                                            color: Colors.black,size: 30,
+                                    Positioned(bottom: -8,
+                                      right: -8,
+                                      child:thumbnailImageLocalPath == null? FloatingActionButton.small(heroTag: "btn1",
+                                          backgroundColor: Colors.cyanAccent,
+                                          onPressed: () {_getImage(ImageSource.gallery);},
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: Colors.white,size: 30,
                                           )):Text(''),
                                     )
                                   ],
@@ -106,11 +104,10 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
                                     border:
                                         Border.all(width: 1, color: Colors.black54),
                                     shape: BoxShape.circle),
-                              ),
+
                            ),
 
-                         InkWell(onTap: (){ _getlicenseImage(ImageSource.gallery);},
-                           child: Container(
+                        Container(
 
                                   child: Stack(clipBehavior: Clip.none,
                                     children: [
@@ -131,14 +128,14 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 10)):Text(''),
                                       ),
-                                         Positioned(top: -23,
-                                           left: 0,
-                                           right: 0,
-                                           child:licenseImageLocalPath==null? IconButton(
-                                              onPressed: () {},
-                                              icon: Icon(
-                                                Icons.add_a_photo_rounded,
-                                                color: Colors.black,size: 30,
+                                         Positioned(bottom: -8,
+                                           right: -8,
+                                           child:licenseImageLocalPath==null? FloatingActionButton.small(heroTag: "btn2",
+                                              onPressed: () {_getImage1(ImageSource.gallery);},
+                                               backgroundColor: Colors.cyanAccent,
+                                              child: Icon(
+                                                Icons.edit,
+                                                color: Colors.white,size: 30,
                                               )
                                       ):Text(''),
                                          )
@@ -147,7 +144,7 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
                                   decoration: BoxDecoration(color: Colors.white70,
                                       border: Border.all(
                                           width: 1, color: Colors.black54),
-                                      shape: BoxShape.circle)),
+                                      shape: BoxShape.circle),
                          ),
                         ],
                       ),
@@ -246,7 +243,7 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    FloatingActionButton(
+                    FloatingActionButton(heroTag: "btn3",
                       onPressed: registerAsdriver,
                       child: Icon(
                         Icons.done,
@@ -272,24 +269,30 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
   }
 
 
-  void _getImage(ImageSource gallery) async{
-    final pickedImage=await ImagePicker().pickImage(source: gallery,imageQuality: 70);
-    if(pickedImage!=null){
+  void _getImage(ImageSource imageSource) async {
+    final pickedImage = await ImagePicker().pickImage(
+      source: imageSource,
+      imageQuality: 70,
+    );
+    if (pickedImage != null) {
       setState(() {
-        thumbnailImageLocalPath=pickedImage.path;
-      });
-    }
-
-  }
-
-  void _getlicenseImage(ImageSource gallery) async{
-    final pickedlicenseImage=await ImagePicker().pickImage(source: gallery,imageQuality: 70);
-    if(pickedlicenseImage!=null){
-      setState(() {
-        licenseImageLocalPath=pickedlicenseImage.path;
+        thumbnailImageLocalPath = pickedImage.path;
       });
     }
   }
+  void _getImage1(ImageSource imageSource) async {
+    final pickedImage = await ImagePicker().pickImage(
+      source: imageSource,
+      imageQuality: 70,
+    );
+    if (pickedImage != null) {
+      setState(() {
+        licenseImageLocalPath = pickedImage.path;
+      });
+    }
+  }
+
+
 
   void registerAsdriver() async {
     if(_formKey.currentState!.validate()){
@@ -297,10 +300,13 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
       final email=_emailController.text;
       final password =_passwordController.text;
     try{
-
+     final downloadurl =
+      await driverProvider.uploadImage(thumbnailImageLocalPath!);
+     final downloadurl2 =
+      await driverProvider.uploadImage(licenseImageLocalPath!);
       UserCredential credential;
       credential=  await AuthService.register(email, password);
-    final drivers=DriverModel(driverId: credential.user!.uid, name: _nameController.text, email: _emailController.text, phone: int.parse(_phoneController.text), age: int.parse(_ageController.text), isDriver: true, driverLicenseImage: licenseImageLocalPath!,driverImage: thumbnailImageLocalPath!);
+    final drivers=DriverModel(driverId: credential.user!.uid, name: _nameController.text, email: _emailController.text, phone: int.parse(_phoneController.text), age: int.parse(_ageController.text), isDriver: true, driverLicenseImage: downloadurl2,driverImage: downloadurl);
     await driverProvider.registerDrivers(drivers);
       EasyLoading.dismiss();
       if(mounted){

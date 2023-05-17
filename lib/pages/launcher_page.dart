@@ -1,17 +1,30 @@
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:transpor_guidance_admin/Authservice/authservice.dart';
+import 'package:transpor_guidance_admin/models/admin_model.dart';
 import 'package:transpor_guidance_admin/pages/dashboard_page.dart';
+import 'package:transpor_guidance_admin/pages_for_driver/dashboard_page_driver.dart';
 
 import 'login_page.dart';
-class LauncherPage extends StatelessWidget {
+class LauncherPage extends StatefulWidget {
   static const String routeName ='/';
-  const LauncherPage({Key? key}) : super(key: key);
+   LauncherPage({Key? key}) : super(key: key);
+
+  @override
+  State<LauncherPage> createState() => _LauncherPageState();
+}
+
+class _LauncherPageState extends State<LauncherPage> {
+late AdminModel adminModel;
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration.zero,(){
       if(AuthService.currentUser!=null){
-        Navigator.pushReplacementNamed(context, DashboardPage.routeName);
+      route();
       }
       else{
         Navigator.pushReplacementNamed(context, LoginPage.routeName);
@@ -22,5 +35,23 @@ class LauncherPage extends StatelessWidget {
         child: CircularProgressIndicator(),
       ),
     );
+  }
+
+  void route() {
+    User? user = FirebaseAuth.instance.currentUser;
+    var kk = FirebaseFirestore.instance
+        .collection('Admins')
+        .doc(user!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        if (documentSnapshot.get('isAdmin') == true) {
+         Navigator.pushReplacementNamed(context, DashboardPage.routeName);
+        }
+      }else {
+        Navigator.pushReplacementNamed(context, DashboardDriverPage.routeName);
+
+      }
+    });
   }
 }

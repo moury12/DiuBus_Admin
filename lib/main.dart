@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       builder: EasyLoading.init(),
     initialRoute: LauncherPage.routeName,
     routes: {
-LauncherPage.routeName:(_)=>const LauncherPage(),
+LauncherPage.routeName:(_)=>LauncherPage(),
 DashboardPage.routeName:(_)=>const DashboardPage(),
 DashboardDriverPage.routeName:(_)=>const DashboardDriverPage(),
 LoginPage.routeName:(_)=>const LoginPage(),

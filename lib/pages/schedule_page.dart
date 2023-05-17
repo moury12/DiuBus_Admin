@@ -52,7 +52,7 @@ class _SchedulePageState extends State<SchedulePage> {
           ),
 
         ],
-
+foregroundColor: Colors.black54,
         backgroundColor: Colors.white,elevation: 0,),
       body: ListView(
         children: [Padding(
