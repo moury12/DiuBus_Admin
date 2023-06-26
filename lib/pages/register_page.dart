@@ -154,7 +154,7 @@ _phoneController.dispose();
 
       UserCredential credential;
    credential=  await AuthService.register(email, password);
-     final adminModel = AdminModel(adminId: credential.user!.uid, name: _nameController.text, email: credential.user!.email!, phone: _phoneController.text, designation: designation!,imageUrl:credential.user!.photoURL,isAdmin: true );
+     final adminModel = AdminModel(adminId: credential.user!.uid, name: _nameController.text, email: credential.user!.email!, phone: _phoneController.text,imageUrl:credential.user!.photoURL, designation: designation!,isAdmin: true );
      await adminProvider.addAdmin(adminModel);
      EasyLoading.dismiss();
      if(mounted){

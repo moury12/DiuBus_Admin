@@ -1,11 +1,11 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:transpor_guidance_admin/Authservice/authservice.dart';
 import 'package:transpor_guidance_admin/pages/add_bus_info.dart';
-import 'package:transpor_guidance_admin/pages/login_page.dart';
 import 'package:transpor_guidance_admin/pages/notification_page.dart';
 import 'package:transpor_guidance_admin/providers/bus_provider.dart';
+import 'package:transpor_guidance_admin/providers/driver_provider.dart';
+import 'package:transpor_guidance_admin/providers/userProvider.dart';
 
 import 'home_page.dart';
 class DashboardPage extends StatefulWidget {
@@ -21,6 +21,8 @@ class _DashboardPageState extends State<DashboardPage> {
   void didChangeDependencies() {
   Provider.of<BusProvider>(context,listen: false).getAllBus();
   Provider.of<BusProvider>(context,listen: false).getAllSchedule();
+  Provider.of<DriverProvider>(context,listen: false).getAllDriver();
+  Provider.of<UserProvider>(context,listen: false).getUserInfo();
 
     super.didChangeDependencies();
   }

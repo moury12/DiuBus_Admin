@@ -4,10 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:transpor_guidance_admin/Authservice/authservice.dart';
-import 'package:transpor_guidance_admin/models_for_driver/driver_model.dart';
+import 'package:transpor_guidance_admin/models/driver_model.dart';
 import 'package:transpor_guidance_admin/providers/driver_provider.dart';
 
 import '../pages/login_page.dart';
@@ -23,6 +22,7 @@ class RegisterDriverPage extends StatefulWidget {
 
 class _RegisterDriverPageState extends State<RegisterDriverPage> {
   final _formKey = GlobalKey<FormState>();
+  String? designation;
   String? thumbnailImageLocalPath;
   String? licenseImageLocalPath;
   final _emailController = TextEditingController();
@@ -150,37 +150,37 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
                       ),
                   ),
                     SizedBox(height: 20,),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MultiSelectDropDown(
-                          backgroundColor: Colors.transparent,
-                          optionsBackgroundColor: Colors.transparent,
-                          borderWidth: 1,
-                          onOptionSelected:
-                              (List<ValueItem> selectedOptions) {},
-                          hint: 'Select Available Days',
-                          options: <ValueItem>[
-                            ValueItem(label: 'Saturday', value: '1'),
-                            ValueItem(label: 'Sunday', value: '2'),
-                            ValueItem(label: 'Monday', value: '3'),
-                            ValueItem(label: 'Tuesday', value: '4'),
-                            ValueItem(label: 'Wednesday', value: '5'),
-                            ValueItem(label: 'Thursday', value: '6'),
-                            ValueItem(label: 'Friday', value: '7'),
-                          ],
-                          selectionType: SelectionType.multi,
-                          hintStyle: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15),
-                          chipConfig: const ChipConfig(
-                              wrapType: WrapType.wrap,
-                              backgroundColor: Colors.redAccent,
-                              autoScroll: true),
-                          dropdownHeight: 250,
-                          optionTextStyle: const TextStyle(fontSize: 16),
-                          selectedOptionIcon: const Icon(Icons.check_circle)),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                      // child: MultiSelectDropDown(
+                      //     backgroundColor: Colors.transparent,
+                      //     optionsBackgroundColor: Colors.transparent,
+                      //     borderWidth: 1,
+                      //     onOptionSelected:
+                      //         (List<ValueItem> selectedOptions) {},
+                      //     hint: 'Select Available Days',
+                      //     options: <ValueItem>[
+                      //       ValueItem(label: 'Saturday', value: '1'),
+                      //       ValueItem(label: 'Sunday', value: '2'),
+                      //       ValueItem(label: 'Monday', value: '3'),
+                      //       ValueItem(label: 'Tuesday', value: '4'),
+                      //       ValueItem(label: 'Wednesday', value: '5'),
+                      //       ValueItem(label: 'Thursday', value: '6'),
+                      //       ValueItem(label: 'Friday', value: '7'),
+                      //     ],
+                      //     selectionType: SelectionType.multi,
+                      //     hintStyle: TextStyle(
+                      //         color: Colors.black54,
+                      //         fontWeight: FontWeight.bold,
+                      //         fontSize: 15),
+                      //     chipConfig: const ChipConfig(
+                      //         wrapType: WrapType.wrap,
+                      //         backgroundColor: Colors.redAccent,
+                      //         autoScroll: true),
+                      //     dropdownHeight: 250,
+                      //     optionTextStyle: const TextStyle(fontSize: 16),
+                      //     selectedOptionIcon: const Icon(Icons.check_circle)),
+                    // ),
                     TextFormField(
                       controller: _nameController,
                       keyboardType: TextInputType.name,
@@ -240,6 +240,22 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
                         return null;
                       },
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),  DropdownButton<String>(
+                        icon: Icon(Icons.work),
+                        value: designation,
+                        hint: Text('Select Designation'),
+                        isExpanded: true,
+                        items: designations
+                            .map((designation) => DropdownMenuItem<String>(
+                            value: designation, child: Text(designation,style: TextStyle(color: Colors.black54,))))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            designation = value;
+                          });
+                        }),
                     SizedBox(
                       height: 10,
                     ),
@@ -306,7 +322,7 @@ class _RegisterDriverPageState extends State<RegisterDriverPage> {
       await driverProvider.uploadImage(licenseImageLocalPath!);
       UserCredential credential;
       credential=  await AuthService.register(email, password);
-    final drivers=DriverModel(driverId: credential.user!.uid, name: _nameController.text, email: _emailController.text, phone: int.parse(_phoneController.text), age: int.parse(_ageController.text), isDriver: true, driverLicenseImage: downloadurl2,driverImage: downloadurl);
+    final drivers=DriverModel(driverId: credential.user!.uid, name: _nameController.text, email: _emailController.text, phone: int.parse(_phoneController.text), age: int.parse(_ageController.text), driverLicenseImage: downloadurl2,driverImage: downloadurl,  isDriver: true);
     await driverProvider.registerDrivers(drivers);
       EasyLoading.dismiss();
       if(mounted){

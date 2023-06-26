@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:transpor_guidance_admin/Authservice/authservice.dart';
 import 'package:transpor_guidance_admin/models/admin_model.dart';
 import 'package:transpor_guidance_admin/pages/launcher_page.dart';
-import 'package:transpor_guidance_admin/pages_for_driver/dashboard_page_driver.dart';
 import 'package:transpor_guidance_admin/pages_for_driver/register_page_driver.dart';
 
 import 'register_page.dart';

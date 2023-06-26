@@ -3,6 +3,7 @@ const designations=[
   'Operation Head',
   'In charge Officer',
   'Student Ticketing officer',
+'Driver',
   'Other'
 ];
 const subDistricts=[

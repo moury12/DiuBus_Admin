@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 import 'package:transpor_guidance_admin/models/bus_model.dart';
 import 'package:transpor_guidance_admin/pages/dashboard_page.dart';
-import 'package:transpor_guidance_admin/pages/home_page.dart';
 import 'package:transpor_guidance_admin/providers/bus_provider.dart';
 
 import '../utils/constants.dart';
@@ -69,7 +67,7 @@ void dispose() {
                   onTap: (){_getBusImage(ImageSource.gallery);},
                   child:busImage==null? Image.asset('assets/icon6.png',height: 90,width: 90,):Image.file(File(busImage!)),
                 ),
-                Expanded(
+                Expanded(flex: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(15),
                     child: TextField(
@@ -169,7 +167,7 @@ setState(() {
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Expanded(
+                child: Expanded(flex: 1,
                   child: TextField(
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(hintText: 'Rent for Student',
@@ -179,16 +177,7 @@ setState(() {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Expanded(
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(hintText: 'Rent for Faculty', suffixIcon: Icon(Icons.attach_money)),
-                    controller: busRentFacultyController,
-                  ),
-                ),
-              ),
+
           ],
         ),
       ),

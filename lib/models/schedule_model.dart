@@ -1,5 +1,5 @@
 import 'package:transpor_guidance_admin/models/bus_model.dart';
-import 'package:transpor_guidance_admin/models_for_driver/driver_model.dart';
+import 'package:transpor_guidance_admin/models/driver_model.dart';
 const String collectionSchedule = 'Schedule';
 const String scheduleFieldbusModel = 'bus';
 const String scheduleFieldid = 'id';

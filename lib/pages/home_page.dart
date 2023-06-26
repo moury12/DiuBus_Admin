@@ -135,7 +135,7 @@ ScheduleModel?scheduleModel;
           ),
         ),
 
-Expanded(
+Expanded(flex: 1,
   child:   ListView.builder(itemCount: provider.scheduleList.length,
   
     itemBuilder: (context, index) {

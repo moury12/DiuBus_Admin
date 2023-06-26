@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,20 +15,27 @@ import 'package:transpor_guidance_admin/pages/policy_page.dart';
 import 'package:transpor_guidance_admin/pages/register_page.dart';
 import 'package:transpor_guidance_admin/pages/schedule_page.dart';
 import 'package:transpor_guidance_admin/pages/users_page.dart';
-import 'package:transpor_guidance_admin/pages_for_driver/dashboard_page_driver.dart';
+import 'package:transpor_guidance_admin/pages_for_driver/home_page_driver.dart';
+import 'package:transpor_guidance_admin/pages_for_driver/profile_page_driver.dart';
 import 'package:transpor_guidance_admin/pages_for_driver/register_page_driver.dart';
 import 'package:transpor_guidance_admin/providers/admin_provider.dart';
 import 'package:transpor_guidance_admin/providers/driver_provider.dart';
+import 'package:transpor_guidance_admin/providers/userProvider.dart';
 import 'pages/launcher_page.dart';
 import 'providers/bus_provider.dart';
-
+Future<void> _firebaseMessegingBackgroundHandeller(RemoteMessage message) async{
+  print('${ message.messageId}');
+}
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseMessaging.instance.getInitialMessage();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessegingBackgroundHandeller);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context)=>AdminProvider()),
     ChangeNotifierProvider(create: (context)=>BusProvider()),
+    ChangeNotifierProvider(create: (context)=>UserProvider()),
     ChangeNotifierProvider(create: (context)=>DriverProvider()),
   ],
       child: const MyApp()));
@@ -51,7 +59,8 @@ class MyApp extends StatelessWidget {
     routes: {
 LauncherPage.routeName:(_)=>LauncherPage(),
 DashboardPage.routeName:(_)=>const DashboardPage(),
-DashboardDriverPage.routeName:(_)=>const DashboardDriverPage(),
+HomePageDriver.routeName:(_)=>const HomePageDriver(),
+ProfilePageDriver.routeName:(_)=> ProfilePageDriver(),
 LoginPage.routeName:(_)=>const LoginPage(),
 RegisterPage.routeName:(_)=>const RegisterPage(),
 RegisterDriverPage.routeName:(_)=>const RegisterDriverPage(),

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:transpor_guidance_admin/Authservice/authservice.dart';
 import 'package:transpor_guidance_admin/models/admin_model.dart';
 import 'package:transpor_guidance_admin/pages/dashboard_page.dart';
-import 'package:transpor_guidance_admin/pages_for_driver/dashboard_page_driver.dart';
 
 import 'login_page.dart';
 class LauncherPage extends StatefulWidget {
@@ -22,17 +21,22 @@ late AdminModel adminModel;
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero,(){
+     Future.delayed(Duration.zero,(){
       if(AuthService.currentUser!=null){
-      route();
+       route();
       }
       else{
         Navigator.pushReplacementNamed(context, LoginPage.routeName);
       }
-    });
+     });
     return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(),
+        child:
+            Image.asset('assets/logo2.png',
+              height:100,width: 100,),
+
+
+
       ),
     );
   }
@@ -47,11 +51,16 @@ late AdminModel adminModel;
       if (documentSnapshot.exists) {
         if (documentSnapshot.get('isAdmin') == true) {
          Navigator.pushReplacementNamed(context, DashboardPage.routeName);
+        }else{
+          //Navigator.pushReplacementNamed(context, .routeName);
+
         }
       }else {
-        Navigator.pushReplacementNamed(context, DashboardDriverPage.routeName);
+        Navigator.pushReplacementNamed(context, LoginPage.routeName);
 
       }
-    });
+    }
+
+    );
   }
 }

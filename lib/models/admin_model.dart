@@ -6,41 +6,60 @@ const String adminFieldPhone = 'phone';
 const String adminFieldDesignation = 'Designation';
 const String adminFieldisAdmin = 'isAdmin';
 const String adminFieldimageURl = 'imageURl';
+//const String driverFieldimageURl = 'driver image';
+//const String driverFieldage = 'age';
+const String adminFieldtoken = 'admin token';
 class AdminModel {
   String adminId;
   String name;
   String email;
   String phone;
-  String designation;
-  bool isAdmin;
   String? imageUrl;
+  // num? age;
+ // String? driverImage;
+String? adminToken;
+  String? designation;
+  bool isAdmin;
+
 
   AdminModel(
       {required this.adminId,
       required this.name,
       required this.email,
       required this.phone,
-      required this.designation,
+       this.designation,
+        this.imageUrl,
+        // this.age,
+       // this.driverImage,
+      this.adminToken,
       required this.isAdmin,
-      this.imageUrl});
+     });
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       adminFieldId: adminId,
       adminFieldName: name,
       adminFieldEmail: email,
-      adminFieldPhone: phone,
+      adminFieldPhone: phone,  adminFieldtoken: adminToken,
+      //driverFieldage:age ,
+     // driverFieldimageURl:driverImage,
+      adminFieldimageURl: imageUrl,
       adminFieldDesignation: designation,
       adminFieldisAdmin: isAdmin,
-      adminFieldimageURl: imageUrl,
+
     };
   }
 
   factory AdminModel.fromMap(Map<String, dynamic> map) => AdminModel(
       adminId: map[adminFieldId],
       name: map[adminFieldName],
+    imageUrl: map[adminFieldimageURl],
+      //age: map[driverFieldage],
+     adminToken: map[adminFieldtoken],
+
+     // driverImage: map[driverFieldimageURl],
       email: map[adminFieldEmail],
       phone: map[adminFieldPhone],
       designation: map[adminFieldDesignation],
       isAdmin: map[adminFieldisAdmin],
-      imageUrl: map[adminFieldimageURl]);
+      );
 }

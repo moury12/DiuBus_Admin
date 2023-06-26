@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:transpor_guidance_admin/models/bus_model.dart';
+import 'package:transpor_guidance_admin/models/driver_model.dart';
 import 'package:transpor_guidance_admin/models/schedule_model.dart';
 import 'package:transpor_guidance_admin/providers/bus_provider.dart';
+import 'package:transpor_guidance_admin/providers/driver_provider.dart';
 
 import '../utils/constants.dart';
 import 'dashboard_page.dart';
@@ -26,6 +28,7 @@ class _SchedulePageState extends State<SchedulePage> {
     semesterController.dispose();
   details.dispose();}
   BusModel? busModel;
+  DriverModel? driverModel;
   TimeOfDay startTime=TimeOfDay(hour:00 , minute: 00);
   TimeOfDay departureTime=TimeOfDay(hour:00 , minute: 00);
   late BusProvider busprovider;
@@ -68,18 +71,6 @@ foregroundColor: Colors.black54,
             ],
 
           ),
-        ),    Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(maxLines: 2,
-            controller: semesterController,
-           decoration: InputDecoration(hintText: 'Semester'),
-          ),
-        ),Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(maxLines: 3,
-            controller: details,
-            decoration: InputDecoration(hintText: 'Route Details'),
-          ),
         ),
           Consumer<BusProvider>(
             builder: (context, provider, child) =>
@@ -103,6 +94,33 @@ foregroundColor: Colors.black54,
                       onChanged: (value) {
                         setState(() {
                           busModel = value;
+                        });
+                      }),
+                ),
+          ),
+
+          Consumer<DriverProvider>(
+            builder: (context, provider, child) =>
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<DriverModel>(
+                      hint: const Text('Assign driver'),
+                      value: driverModel,
+                      isExpanded: true,
+                      validator: (value) {
+                        if (value == null) {
+                          return 'please select a Bus';
+                        }
+                        return null;
+                      },
+                      items: provider.driverList
+                          .map((driverModel) => DropdownMenuItem(
+                          value: driverModel,
+                          child: Text(driverModel.name)))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          driverModel = value;
                         });
                       }),
                 ),
@@ -139,7 +157,19 @@ foregroundColor: Colors.black54,
                 }),
           ),
 
-
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(maxLines: 2,
+              controller: semesterController,
+              decoration: InputDecoration(hintText: 'Semester'),
+            ),
+          ),Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(maxLines: 3,
+              controller: details,
+              decoration: InputDecoration(hintText: 'Route Details'),
+            ),
+          ),
 
         ],
       ),
