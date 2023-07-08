@@ -194,16 +194,17 @@ if(busNameController.text.isEmpty){
 if(destination==null){
   showMsg(context, 'Field required');
   return;
-}
-if(busRentFacultyController.text.isEmpty){
-  showMsg(context, 'Field required');
-  return;
+
 }if(busRentStudentController.text.isEmpty){
   showMsg(context, 'Field required');
   return;
 }
 EasyLoading.show(status:'Please wait' );
-final busModel=BusModel(busName: busNameController.text, busImage:busImage,busType: busTypeGroupValue, destination: destination!, passengerCategory: passengerTypeGroupValue, studentRent: int.parse(busRentStudentController.text), facultyRent: int.parse(busRentFacultyController.text));
+final downloadurl =
+await busProvider.uploadImage(busImage!);
+
+final busModel=BusModel(busName: busNameController.text,
+    busImage:downloadurl,busType: busTypeGroupValue, destination: destination!, passengerCategory: passengerTypeGroupValue, studentRent: int.parse(busRentStudentController.text), facultyRent:0);
 try{
   await busProvider.addBus(busModel);
   EasyLoading.dismiss();
