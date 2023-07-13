@@ -23,15 +23,22 @@ import 'package:transpor_guidance_admin/providers/driver_provider.dart';
 import 'package:transpor_guidance_admin/providers/userProvider.dart';
 import 'pages/launcher_page.dart';
 import 'providers/bus_provider.dart';
-Future<void> _firebaseMessegingBackgroundHandeller(RemoteMessage message) async{
-  print('${ message.messageId}');
-}
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
 
+  print("Handling a background message: ${message.data}");
+}
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseMessaging.instance.getInitialMessage();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessegingBackgroundHandeller);
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  await FirebaseMessaging.instance.subscribeToTopic('req');
+  await FirebaseMessaging.instance.subscribeToTopic('feedback');
+  print('FCM TOKEN $fcmToken');
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context)=>AdminProvider()),
     ChangeNotifierProvider(create: (context)=>BusProvider()),

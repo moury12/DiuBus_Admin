@@ -49,6 +49,7 @@ dependencies:
   connectivity_plus:
   google_sign_in:
   pin_code_fields:
+  firebase_analytics:
   flutter_local_notifications: ^14.1.1
   firebase_messaging: ^14.6.3
   http:
