@@ -3,6 +3,7 @@ import 'package:transpor_guidance_admin/models/admin_model.dart';
 import 'package:transpor_guidance_admin/models/bus_model.dart';
 import 'package:transpor_guidance_admin/models/driver_model.dart';
 import 'package:transpor_guidance_admin/models/feedback_model.dart';
+import 'package:transpor_guidance_admin/models/notice_model.dart';
 import 'package:transpor_guidance_admin/models/notification_model_user.dart';
 import 'package:transpor_guidance_admin/models/reqModel.dart';
 import 'package:transpor_guidance_admin/models/schedule_model.dart';
@@ -20,6 +21,9 @@ static Future<DocumentSnapshot<Map<String, dynamic>>> getreqById(String id) =>
 db.collection(collectionRequest).doc(id).get();
 static Future<void> deletenotificationById(String id) =>
 db.collection(collectionNotification).doc(id).delete();
+static Future<void> deleteScheduleByid(String id) =>
+db.collection(collectionSchedule).doc(id).delete();
+
   static Future<void> addAdmin(AdminModel adminModel) {
     return db.collection(collectionAdmin).doc(adminModel.adminId).set(adminModel.toMap());
   }
@@ -61,4 +65,12 @@ db.collection(collectionNotification).doc(id).delete();
   }
 
   static Future<void> deleteRequestById(String? reqId) =>db.collection(collectionNotification).doc(reqId).delete();
+
+  static Future<void> addNotice(NoticeModel notice) {
+    return db.collection(collectionNotice).doc(notice.noticeId).set(notice.toMap());
+
+  }
+  static Stream<QuerySnapshot<Map<String,dynamic>>>getAllNotice()=>
+      db.collection(collectionNotice).snapshots();
+
 }

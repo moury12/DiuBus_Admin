@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:transpor_guidance_admin/Authservice/authservice.dart';
 import 'package:transpor_guidance_admin/models/feedback_model.dart';
 import 'package:transpor_guidance_admin/models/schedule_model.dart';
+import 'package:transpor_guidance_admin/pages/policy_page.dart';
 import 'package:transpor_guidance_admin/providers/bus_provider.dart';
+import 'package:transpor_guidance_admin/utils/constants.dart';
 
 import 'drivers_page.dart';
 import 'login_page.dart';
@@ -23,8 +25,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 ScheduleModel? scheduleModel;
 FeedbackModel? feedbackModel;
+late BusProvider busProvider;
+@override
+  void didChangeDependencies() {
+  busProvider = Provider.of<BusProvider>(context, listen: false);
+
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
+    final id= ModalRoute.of(context)!.settings.arguments as String?;
     return Scaffold(
 
       appBar: AppBar(title:Row(
@@ -120,7 +130,7 @@ FeedbackModel? feedbackModel;
                 ),
                 SizedBox(width: 35,),
                 InkWell(
-                  onTap: (){},
+                  onTap: (){Navigator.pushNamed(context, PolicyPage.routeName);},
                   child: Card(
                     child: Column(children: [
                       Padding(
@@ -137,7 +147,7 @@ FeedbackModel? feedbackModel;
             ),
           ),Divider(),
             //Text("--------Schedule------",style: TextStyle(fontSize: 12,color: Colors.black54),),
-Container(width: 380,height: 280,
+Container(width: 380,height: 260,
   child:   ListView.builder(scrollDirection: Axis.horizontal,
     itemCount: provider.scheduleList.length,
 
@@ -146,32 +156,46 @@ Container(width: 380,height: 280,
     final s= provider.scheduleList[index];
 
     return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
-          child: Container(width: 300,
-            child: Column(mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Image.asset('assets/b.jpg',height: 150,width: double.infinity,),
-                ListTile(
-                  title: Text(s.busModel.busName),
-                  subtitle: Text('${s.startTime}--${s.departureTime}',style: TextStyle(fontSize: 12),),
-                  trailing: Column(
-                    children: [
-                      Text(s.busModel.passengerCategory),
-                      Text('${s.busModel.studentRent.toString()}BDT',style: TextStyle(fontSize: 12,color: Colors.black54),),
+        padding: const EdgeInsets.only(left: 8.0,right: 8),
+        child: Stack(
+          children: [
+            Card(
+              child: Container(width: 300,
+                child: Column(mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Image.asset('assets/b.jpg',height: 150,width: double.infinity,),
+                    ListTile(
+                      title: Text(s.busModel.busName),
+                      subtitle: Text('${s.startTime}--${s.departureTime}',style: TextStyle(fontSize: 12),),
+                      trailing: Column(
+                        children: [
+                          Text(s.busModel.passengerCategory),
+                          Text('${s.busModel.studentRent.toString()}BDT',style: TextStyle(fontSize: 12,color: Colors.black54),),
 
-                    ],
-                  ),
-                ),
+                        ],
+                      ),
+                    ),
 
-                Row(mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Icons.route,color: Colors.red,),
-                    Text('${s.from}<>${s.destination}',style: TextStyle(color: Colors.black54),),
+                    Row(mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Icon(Icons.route,color: Colors.red,),
+                        Text('${s.from}<>${s.destination}',style: TextStyle(color: Colors.black54),),
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
+            Positioned( right:0,bottom: 5,
+              child: FloatingActionButton.small(
+                onPressed: (){
+                busProvider.deleteScheduleByid(s.id);
+                showMsg(context, "Schedule has been deleted");
+                print(s.id);
+              }, child: Icon(Icons.delete)
+              ,backgroundColor: Colors.redAccent.shade100,foregroundColor: Colors.white,
+              heroTag: 344,),
+            )
+          ],
         ),
     );
 
@@ -179,7 +203,7 @@ Container(width: 380,height: 280,
 ), Divider(),
             //Text("--------Feedback------",style: TextStyle(fontSize: 12,color: Colors.black54),),
             Container(
-              height: 200,width: 380,
+              height: 150,width: 380,
               child: ListView.builder(scrollDirection: Axis.horizontal,
                 itemCount: provider.feedlist.length,
 
@@ -188,6 +212,8 @@ Container(width: 380,height: 280,
                   return Container(height: 200,width: 280,
                     child: Card(
                       child: ListTile(
+                        tileColor: id==null? null : id==f.commentId?Colors.lightBlue.shade100:null ,
+
                         leading: ClipRRect(borderRadius: BorderRadius.circular(90),
                           child: Image.network(f.userModel.imageUrl??'',errorBuilder: (context, error, stackTrace) {
                             return Icon(Icons.account_circle,color: Colors.blueAccent.shade100,size: 50,);

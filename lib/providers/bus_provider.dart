@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:transpor_guidance_admin/database/db_helper.dart';
 import 'package:transpor_guidance_admin/models/bus_model.dart';
 import 'package:transpor_guidance_admin/models/feedback_model.dart';
+import 'package:transpor_guidance_admin/models/notice_model.dart';
 import 'package:transpor_guidance_admin/models/notification_model_user.dart';
 import 'package:transpor_guidance_admin/models/schedule_model.dart';
 
@@ -13,6 +14,7 @@ import '../models/reqModel.dart';
 
 class BusProvider extends ChangeNotifier{
   List<BusModel> busList=[];
+  List<NoticeModel> notice = [];
   List<ScheduleModel>scheduleList=[];
   List<FeedbackModel>feedlist=[];
   List <NotificationModel>  notificationList =[];
@@ -23,6 +25,13 @@ class BusProvider extends ChangeNotifier{
   getAllNotification(){
     dbHelper.getAllNotification().listen((snapshot) {
       notificationList=List.generate(snapshot.docs.length, (index) => NotificationModel.fromMap(snapshot.docs[index].data()));
+      notifyListeners();
+    });
+  }
+  getAllNotice(){
+    dbHelper.getAllNotice().listen((snapshot) {
+      notice=List.generate(snapshot.docs.length, (index) => NoticeModel.fromMap(snapshot.docs[index].data()));
+
       notifyListeners();
     });
   }
@@ -68,10 +77,17 @@ class BusProvider extends ChangeNotifier{
   Future<void> deleteNotificationById(String id) async {
     await dbHelper.deletenotificationById(id);
 
+  }  Future<void> deleteScheduleByid(String? id) async {
+    await dbHelper.deleteScheduleByid(id!);
+
   }
 
   void deleteRequestById(String? reqId) async{
     await dbHelper.deleteRequestById(reqId);
+  }
+
+  Future<void> addNotice(NoticeModel notice) {
+    return dbHelper.addNotice(notice);
   }
   //Future<void> deleteReq(RequestModel id) {}
 }

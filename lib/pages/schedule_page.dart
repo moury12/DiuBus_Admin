@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:transpor_guidance_admin/models/bus_model.dart';
 import 'package:transpor_guidance_admin/models/driver_model.dart';
@@ -21,6 +22,7 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   final semesterController = TextEditingController();
   final details = TextEditingController();
+  String? busImage;
   @override
   void dispose() {
     super.dispose();
@@ -28,54 +30,44 @@ class _SchedulePageState extends State<SchedulePage> {
     semesterController.dispose();
     details.dispose();
   }
-
+  late BusProvider busProvider;
+  @override
+  void didChangeDependencies() {
+    busProvider = Provider.of<BusProvider>(context, listen: false);
+    super.didChangeDependencies();
+  }
   BusModel? busModel;
   DriverModel? driverModel;
   TimeOfDay startTime = TimeOfDay(hour: 00, minute: 00);
   TimeOfDay departureTime = TimeOfDay(hour: 00, minute: 00);
-  late BusProvider busprovider;
+
   String? city;
   String? city1;
   @override
-  void didChangeDependencies() {
-    busprovider = Provider.of<BusProvider>(context, listen: false);
-    super.didChangeDependencies();
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset(
-          'assets/logo2.png',
-          height: 70,
-          width: 70,
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: Center(
-                child: Text('Set Bus Schedule',
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/logo2.png',
+              height: 70,
+              width: 70,
+            ),
+            Center(
+                child: Text('Set Schedule',
                     style: TextStyle(
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
                         fontSize: 15))),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: IconButton(
-              onPressed: _saveSchedule,
-              icon: Icon(
-                Icons.save,
-                size: 25,
-                color: Colors.teal.shade200,
-              ),
-            ),
-          ),
-        ],
-        foregroundColor: Colors.black54,
+          ],
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
+        foregroundColor: Colors.black54,
       ),
       body: ListView(
         children: [
@@ -91,13 +83,34 @@ class _SchedulePageState extends State<SchedulePage> {
                     icon: Icon(Icons.watch_later_outlined),
                     label: Text(startTime.hour == 0
                         ? 'Start Time'
-                        : startTime!.format(context).toString())),
+                        : startTime.format(context).toString())),
                 TextButton.icon(
                     onPressed: selectDeparturetime,
                     icon: Icon(Icons.departure_board),
                     label: Text(departureTime.hour == 0
                         ? 'Departure Time'
-                        : departureTime!.format(context).toString())),
+                        : departureTime.format(context).toString())),
+              ],
+            ),
+          ),  Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  child:
+                  Stack(clipBehavior: Clip.none,
+                    children: [
+                      Image.asset('assets/icons7.png',height: 70,width: 70,),
+                      Positioned(top: -5,
+                          right: -5,
+
+                          child: Icon(Icons.add_circle,size: 30, color: Colors.black,))
+                    ],
+                  ),
+                  onTap: () {
+                    _getBusImage(ImageSource.gallery);
+                  },
+                ),
               ],
             ),
           ),
@@ -190,11 +203,10 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              maxLines: 3,
-              controller: details,
-              decoration: InputDecoration(hintText: 'Route Details'),
+            padding: const EdgeInsets.all(20.0),
+            child: FloatingActionButton(
+              onPressed: _saveSchedule,
+              child: Icon(Icons.save_alt),backgroundColor: Colors.lightBlueAccent.shade100,
             ),
           ),
         ],
@@ -225,10 +237,7 @@ class _SchedulePageState extends State<SchedulePage> {
       showMsg(context, 'Field required');
       return;
     }
-    if (details.text.isEmpty) {
-      showMsg(context, 'Field required');
-      return;
-    }
+
     if (city == null) {
       showMsg(context, 'Field required');
       return;
@@ -242,14 +251,17 @@ class _SchedulePageState extends State<SchedulePage> {
       return;
     }
     EasyLoading.show(status: 'Please wait');
-    final schedule = ScheduleModel(
+    EasyLoading.show(status: 'Please wait');
+    final downloadurl = await busProvider.uploadImage(busImage);
+    final schedule = ScheduleModel(id: DateTime.now().millisecondsSinceEpoch.toString(),
         busModel: busModel!,driverModel: driverModel,
         startTime: startTime.format(context).toString(),
         departureTime: departureTime.format(context).toString(),
-        from: city!,
+        routes: downloadurl,
+        from: city!,semester: semesterController.text,
         destination: city1!);
     try {
-      await busprovider.addSchedule(schedule);
+      await busProvider.addSchedule(schedule);
       EasyLoading.dismiss();
       if (mounted) {
         showMsg(context, "set Schedule");
@@ -258,6 +270,15 @@ class _SchedulePageState extends State<SchedulePage> {
     } catch (error) {
       EasyLoading.dismiss();
       rethrow;
+    }
+  }
+  void _getBusImage(ImageSource gallery) async {
+    final pickedImage =
+    await ImagePicker().pickImage(source: gallery, imageQuality: 70);
+    if (pickedImage != null) {
+      setState(() {
+        busImage = pickedImage.path;
+      });
     }
   }
 }

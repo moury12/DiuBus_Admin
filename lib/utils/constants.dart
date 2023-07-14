@@ -36,8 +36,17 @@ const subDistricts=[
 ];
 showMsg(BuildContext context, String msg) =>
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(margin: EdgeInsets.all(5),
-      content: Text(msg),backgroundColor: Colors.tealAccent.shade200,
+        .showSnackBar(SnackBar(margin: EdgeInsets.all(10),
+      content: Row(
+        children: [  Image.asset(
+          'assets/logo2.png',
+          height: 50,
+          width: 50,
+        ),
+          Text(msg,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10,color: Colors.black54),),
+        ],
+      ),
+      backgroundColor: Colors.lightBlueAccent.shade100.withOpacity(0.5),
       behavior: SnackBarBehavior.floating,));
 abstract class NotificationType {
   static const String feedback = 'New Feedback';
@@ -51,3 +60,4 @@ abstract class NotificationuserType {
 }
 getFormattedDate(DateTime dt, {String pattern = 'dd/MM/yyyy'}) =>
     DateFormat(pattern).format(dt);
+const serverKey ='AAAARRE404c:APA91bFM_-fURUYfiyez5r8lbjP8pfd3wVfly5jwYCBFD5HxqHZZ6Xdj2s6pnZJ1H6OnhC1oh59dQXCD5wBnstT8j-3kAWHVp8XNdjly9FViRW48ABNJXR8vhzOwypssKDPhs6xHNhbg';

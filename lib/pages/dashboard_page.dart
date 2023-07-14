@@ -10,8 +10,9 @@ import 'package:transpor_guidance_admin/providers/userProvider.dart';
 
 import '../utils/notification_service.dart';
 import 'home_page.dart';
+
 class DashboardPage extends StatefulWidget {
-  static const String routeName ='/dash';
+  static const String routeName = '/dash';
   const DashboardPage({Key? key}) : super(key: key);
 
   @override
@@ -30,89 +31,109 @@ class _DashboardPageState extends State<DashboardPage> {
         service.sendNotifications(message);
       }
     });
+    NotificationService service = NotificationService();
     setupInteractedMessage();
     super.initState();
   }
-@override
+
+  @override
   void didChangeDependencies() {
-  Provider.of<BusProvider>(context,listen: false).getAllBus();
-  Provider.of<BusProvider>(context,listen: false).getAllSchedule();
-  Provider.of<DriverProvider>(context,listen: false).getAllDriver();
-  Provider.of<UserProvider>(context,listen: false).getUserInfo();
-  Provider.of<BusProvider>(context,listen: false).getAllNotification();
-  Provider.of<BusProvider>(context,listen: false).getAllFeedback();
+    Provider.of<BusProvider>(context, listen: false).getAllBus();
+    Provider.of<BusProvider>(context, listen: false).getAllSchedule();
+    Provider.of<DriverProvider>(context, listen: false).getAllDriver();
+    Provider.of<UserProvider>(context, listen: false).getUserInfo();
+    Provider.of<BusProvider>(context, listen: false).getAllNotification();
+    Provider.of<BusProvider>(context, listen: false).getAllFeedback();
+    Provider.of<BusProvider>(context, listen: false).getAllNotice();
     super.didChangeDependencies();
   }
-int index=0;
+
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      bottomNavigationBar: CurvedNavigationBar(items:[
-        Icon(Icons.home,size: 25,color: Colors.white,),
-        Icon(Icons.add_circle,size: 25,color: Colors.white,),
-        Icon(Icons.notifications,size: 25,color: Colors.white,)
-      ],color: Colors.blue.shade200,backgroundColor: Colors.transparent,buttonBackgroundColor: Colors.red.shade200,
-index: index,
+      bottomNavigationBar: CurvedNavigationBar(
+        items: [
+          Icon(
+            Icons.home,
+            size: 25,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.add_circle,
+            size: 25,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.notifications,
+            size: 25,
+            color: Colors.white,
+          )
+        ],
+        color: Colors.blue.shade200,
+        backgroundColor: Colors.transparent,
+        buttonBackgroundColor: Colors.red.shade200,
+        index: index,
         height: 60,
-        onTap: (selectedIndex){
-        setState(() {
-          index=selectedIndex;
-        });
+        onTap: (selectedIndex) {
+          setState(() {
+            index = selectedIndex;
+          });
         },
       ),
       body: getSelectedPage(index: index),
     );
   }
 
- Widget getSelectedPage({required int index}) {
+  Widget getSelectedPage({required int index}) {
     Widget widget;
-    switch(index){
+    switch (index) {
       case 0:
-        widget =HomePage();
+        widget = HomePage();
         break;
       case 1:
-        widget =AddBusPage();
+        widget = AddBusPage();
         break;
       case 2:
-        widget =NotificationPage();
+        widget = NotificationPage();
         break;
       default:
-        widget =HomePage();
+        widget = HomePage();
         break;
     }
     return widget;
   }
-Future<void> setupInteractedMessage() async {
-  // Get any messages which caused the application to open from
-  // a terminated state.
-  RemoteMessage? initialMessage =
-  await FirebaseMessaging.instance.getInitialMessage();
 
-  // If the message also contains a data property with a "type" of "chat",
-  // navigate to a chat screen
-  if (initialMessage != null) {
-    _handleMessage(initialMessage);
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
 
-  // Also handle any interaction when the app is in the background via a
-  // Stream listener
-  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-}
-void _handleMessage(RemoteMessage message) {
-  if (message.data['key'] == 'feed') {
-    print('REDIRECTING...');
-  //final code = message.data['value'];
-    /*//final productModel = Provider.of<ProductProvider>(context, listen: false)
+  void _handleMessage(RemoteMessage message) {
+    if (message.data['key'] == 'feed') {
+      print('REDIRECTING...');
+      //final code = message.data['value'];
+      /*//final productModel = Provider.of<ProductProvider>(context, listen: false)
       .getProductByIdFromCache(id);*/
-    Navigator.pushNamed(context, NotificationPage.routeName);
-  } else if (message.data['key'] == 'request') {
-    Navigator.pushNamed(context, NotificationPage.routeName);
-   final id = message.data['value'];
- Provider.of<BusProvider>(context, listen: false)
-        .getProductById(id)
-        .then((value) => Navigator.pushNamed(context, NotificationPage.routeName, arguments: value));
+      Navigator.pushNamed(context, NotificationPage.routeName);
+    } else if (message.data['key'] == 'request') {
+      Navigator.pushNamed(context, NotificationPage.routeName);
+      final id = message.data['value'];
+      Provider.of<BusProvider>(context, listen: false).getProductById(id).then(
+          (value) => Navigator.pushNamed(context, NotificationPage.routeName,
+              arguments: value));
+    }
   }
 }
-}
-

@@ -42,21 +42,26 @@ void dispose() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:
-          Image.asset('assets/logo2.png',height: 70,width: 70,),
-         actions: [
-           Padding(
-             padding: const EdgeInsets.only(right: 2.0),
-
-             child: Center(child: Text('Assign Bus Information ',style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold,fontSize: 15))),
-           ), Padding(
-             padding: const EdgeInsets.all(2.0),
-             child: IconButton(onPressed: _saveBus ,icon: Icon(Icons.save, size: 25, color: Colors.teal.shade200,),),
-           ),
-
-         ],
-
-      backgroundColor: Colors.white,elevation: 0,),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/logo2.png',
+              height: 70,
+              width: 70,
+            ),
+            Center(
+                child: Text('Add BusInfo',
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15))),
+          ],
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        foregroundColor: Colors.black54,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(
@@ -105,40 +110,8 @@ Row(children: [ Radio<String>(value: 'Female Bus', groupValue: busTypeGroupValue
   });              }),
   Text('Female Bus'),],),
 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child:
-DropdownButton<String>(
-  value: destination,
-  hint: Text('Select Destination'),
-  isExpanded:true,
-  items:subDistricts.map((destination) => DropdownMenuItem<String>(child: Text(destination),value: destination,)).toList(),
-  onChanged: (value){
-    setState(() {
-      destination=value;
-    });
-  }
-)
-            ),
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          InkWell(
-child:
-  Stack(clipBehavior: Clip.none,
-          children: [
-                Image.asset('assets/icons7.png',height: 70,width: 70,),
-            Positioned(top: -5,
-                right: -5,
 
-                child: Icon(Icons.add_circle,size: 30, color: Colors.black,))
-          ],
-  ),
-),
-        ],
-      ),
-    ),
+
 
          Padding(
               padding: const EdgeInsets.all(8.0),
@@ -177,7 +150,13 @@ setState(() {
                   ),
                 ),
               ),
-
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: FloatingActionButton(
+                onPressed: _saveBus,
+                child: Icon(Icons.save_alt),backgroundColor: Colors.lightBlueAccent.shade100,
+              ),
+            ),
           ],
         ),
       ),

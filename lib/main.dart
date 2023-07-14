@@ -37,6 +37,7 @@ void main() async{
   final fcmToken = await FirebaseMessaging.instance.getToken();
   await FirebaseMessaging.instance.subscribeToTopic('req');
   await FirebaseMessaging.instance.subscribeToTopic('feedback');
+  await FirebaseMessaging.instance.subscribeToTopic('noticed');
   print('FCM TOKEN $fcmToken');
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiProvider(providers: [
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Transport Guideance',
+      title: 'DIUBus(Admin)',
       theme: ThemeData(
         textTheme: GoogleFonts.prataTextTheme(),
         primarySwatch: Colors.blueGrey,
